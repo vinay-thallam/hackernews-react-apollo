@@ -8,6 +8,7 @@ import { ApolloProvider } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
+import gql from 'graphql-tag'
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/'
@@ -31,3 +32,17 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+
+//One way of making graphql query using apollo client.
+client.query({
+  query: gql`
+    {
+      feed {
+        links {
+          id
+        }
+      }
+    }
+  `
+}).then(response => console.log(response.data.feed))
