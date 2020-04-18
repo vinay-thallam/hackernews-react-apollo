@@ -27,7 +27,7 @@ const VOTE_MUTATION = gql`
   }
 `
 
-const Link = ({link:{id, description, votes, postedBy, url, createdAt}, index}) => {
+const Link = ({link:{id, description, votes, postedBy, url, createdAt}, index, updateStoreAfterVote}) => {
     return (
         <div className="flex mt2 items-start">
           <div className="flex items-center">
@@ -36,11 +36,14 @@ const Link = ({link:{id, description, votes, postedBy, url, createdAt}, index}) 
                 <Mutation 
                     mutation={VOTE_MUTATION}
                     variables={{linkId:id}}
+                    update={(store, {data: vote}) => {
+                        updateStoreAfterVote(store, vote, id)
+                    }}
                     >
                     {voteMutation => (
                         <div className="ml1 gray f11" onClick={voteMutation}>
-                        ▲
-                      </div>
+                            ▲
+                        </div>
                     )}
                 </Mutation>
             )}
