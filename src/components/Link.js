@@ -2,17 +2,47 @@ import React from 'react'
 import { AUTH_TOKEN } from '../constants'
 import { timeDifferenceForDate } from '../utils'
 
+import { Mutation } from 'react-apollo'
+import gql from 'graphql-tag'
+
 const authToken = localStorage.getItem(AUTH_TOKEN)
 
-const Link = ({link:{description, votes, postedBy, url, createdAt}, index}) => {
+const VOTE_MUTATION = gql`
+  mutation VoteMutation($linkId: ID!) {
+    vote(linkId: $linkId) {
+      id
+      link {
+       id
+        votes {
+          id
+          user {
+            id
+          }
+        }
+      }
+      user {
+        id
+      }
+    }
+  }
+`
+
+const Link = ({link:{id, description, votes, postedBy, url, createdAt}, index}) => {
     return (
         <div className="flex mt2 items-start">
           <div className="flex items-center">
             <span className="gray">{index + 1}.</span>
             {authToken && (
-              <div className="ml1 gray f11" onClick={() => this._voteForLink()}>
-                ▲
-              </div>
+                <Mutation 
+                    mutation={VOTE_MUTATION}
+                    variables={{linkId:id}}
+                    >
+                    {voteMutation => (
+                        <div className="ml1 gray f11" onClick={voteMutation}>
+                        ▲
+                      </div>
+                    )}
+                </Mutation>
             )}
           </div>
           <div className="ml1">
